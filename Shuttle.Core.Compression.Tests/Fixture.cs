@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Shuttle.Core.Compression.Tests
 {
 	[TestFixture]
-	public class CompressionAlgorithmFixture
+	public class Fixture
 	{
 		[Test]
 		public void Should_be_able_to_compress_and_decompress_using_gzip()
