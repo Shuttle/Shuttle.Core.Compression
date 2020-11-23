@@ -12,7 +12,7 @@ namespace Shuttle.Core.Compression
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
-            using (var compressed = new MemoryStream())
+            using (var compressed = MemoryStreamCache.Manager.GetStream())
             {
                 using (var gzip = new GZipStream(compressed, CompressionMode.Compress, true))
                 {
@@ -29,19 +29,9 @@ namespace Shuttle.Core.Compression
 
             using (var gzip = new GZipStream(new MemoryStream(bytes), CompressionMode.Decompress))
             {
-                const int size = 4096;
-                var buffer = new byte[size];
-                using (var decompressed = new MemoryStream())
+                using (var decompressed = MemoryStreamCache.Manager.GetStream())
                 {
-                    int count;
-                    do
-                    {
-                        count = gzip.Read(buffer, 0, size);
-                        if (count > 0)
-                        {
-                            decompressed.Write(buffer, 0, count);
-                        }
-                    } while (count > 0);
+                    gzip.CopyTo(decompressed);
                     return decompressed.ToArray();
                 }
             }

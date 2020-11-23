@@ -5,6 +5,7 @@ namespace Shuttle.Core.Compression
         string Name { get; }
 
         byte[] Compress(byte[] bytes);
+
         byte[] Decompress(byte[] bytes);
     }
 }
