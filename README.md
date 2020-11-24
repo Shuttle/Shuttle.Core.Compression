@@ -11,3 +11,4 @@ Implementations available in this package:
 - `DeflateCompressionAlgorithm`
 - `GZipCompressionAlgorithm`
 - `NullCompressionAlgorithm`
+

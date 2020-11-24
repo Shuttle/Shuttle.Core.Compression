@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 using NUnit.Framework;
 
@@ -13,7 +14,23 @@ namespace Shuttle.Core.Compression.Tests
 
             const string text = "gzip compression algorithm";
 
-            Assert.AreEqual(text, Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
+            AssertAlgorithm(algorithm, text);
+        }
+
+        private static void AssertAlgorithm(ICompressionAlgorithm algorithm, string text)
+        {
+            Assert.AreEqual(text,
+                Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
+
+            using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
+            using (var compressed = algorithm.Compress(stream))
+            using (var decompressed = algorithm.Decompress(compressed))
+            using (var decompressedStream = new MemoryStream())
+            {
+                decompressed.CopyTo(decompressedStream);
+
+                Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedStream.ToArray()));
+            }
         }
 
         [Test]
@@ -23,7 +40,7 @@ namespace Shuttle.Core.Compression.Tests
 
             const string text = "deflate compression algorithm";
 
-            Assert.AreEqual(text, Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
+            AssertAlgorithm(algorithm, text);
         }
     }
 }
