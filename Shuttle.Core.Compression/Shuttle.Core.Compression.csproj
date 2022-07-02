@@ -15,7 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="1.4.0" />
-    <PackageReference Include="Shuttle.Core.Contract" Version="10.0.3" />
+    <PackageReference Include="Shuttle.Core.Contract" Version="10.1.0" />
   </ItemGroup>
 
 </Project>
