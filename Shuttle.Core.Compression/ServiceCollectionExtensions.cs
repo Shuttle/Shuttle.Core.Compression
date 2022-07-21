@@ -8,11 +8,11 @@ namespace Shuttle.Core.Compression
     public static class ServiceCollectionExtensions
     {
         public static IServiceCollection AddCompression(this IServiceCollection services,
-            Action<CompressionOptions> builder = null)
+            Action<CompressionBuilder> builder = null)
         {
             Guard.AgainstNull(services, nameof(services));
 
-            var options = new CompressionOptions(services);
+            var options = new CompressionBuilder(services);
 
             builder?.Invoke(options);
 

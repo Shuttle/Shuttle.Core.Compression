@@ -3,9 +3,9 @@ using Shuttle.Core.Contract;
 
 namespace Shuttle.Core.Compression
 {
-    public class CompressionOptions
+    public class CompressionBuilder
     {
-        public CompressionOptions(IServiceCollection services)
+        public CompressionBuilder(IServiceCollection services)
         {
             Guard.AgainstNull(services, nameof(services));
 
@@ -14,14 +14,14 @@ namespace Shuttle.Core.Compression
 
         public IServiceCollection Services { get; }
 
-        public CompressionOptions AddGzip()
+        public CompressionBuilder AddGzip()
         {
             Services.AddSingleton<ICompressionAlgorithm, GZipCompressionAlgorithm>();
 
             return this;
         }
 
-        public CompressionOptions AddDeflate()
+        public CompressionBuilder AddDeflate()
         {
             Services.AddSingleton<ICompressionAlgorithm, DeflateCompressionAlgorithm>();
 
