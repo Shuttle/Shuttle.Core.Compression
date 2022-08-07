@@ -18,17 +18,18 @@ There is also an `ICompressionService` that acts as a central container for all 
 
 In order to add compression:
 
-```
+```c#
 services.AddCompression();
 ```
 
-This will try to the `CompressionService` singleton.
+This will try to add the `CompressionService` singleton.
 
-In order to add compression options use the relevant calls:
+In order to add specific compression algorithms use the relevant builder calls:
 
-```
-services.AddCompression(options => {
-	options.AddGzip();
-	options.AddDeflate();
+```c#
+services.AddCompression(builder => {
+	builder.AddGzip();
+	builder.AddDeflate();
+	builder.AddNull();
 });
 ```

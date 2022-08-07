@@ -27,5 +27,12 @@ namespace Shuttle.Core.Compression
 
             return this;
         }
+
+        public CompressionBuilder AddNull()
+        {
+            Services.AddSingleton<ICompressionAlgorithm, NullCompressionAlgorithm>();
+
+            return this;
+        }
     }
 }
