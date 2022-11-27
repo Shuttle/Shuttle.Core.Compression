@@ -20,6 +20,5 @@ namespace Shuttle.Core.Compression
 
             return services;
         }
-
     }
 }
