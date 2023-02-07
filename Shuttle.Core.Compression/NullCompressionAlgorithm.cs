@@ -1,17 +1,19 @@
+using System.Threading.Tasks;
+
 namespace Shuttle.Core.Compression
 {
     public class NullCompressionAlgorithm : ICompressionAlgorithm
     {
         public string Name => "null";
 
-        public byte[] Compress(byte[] bytes)
+        public Task<byte[]> Compress(byte[] bytes)
         {
-            return bytes;
+            return Task.FromResult(bytes);
         }
 
-        public byte[] Decompress(byte[] bytes)
+        public Task<byte[]> Decompress(byte[] bytes)
         {
-            return bytes;
+            return Task.FromResult(bytes);
         }
     }
 }

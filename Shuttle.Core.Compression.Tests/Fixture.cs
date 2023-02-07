@@ -20,14 +20,14 @@ namespace Shuttle.Core.Compression.Tests
         private static void AssertAlgorithm(ICompressionAlgorithm algorithm, string text)
         {
             Assert.AreEqual(text,
-                Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
+                Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)).Result).Result));
 
             using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(text)))
-            using (var compressed = algorithm.Compress(stream))
+            using (var compressed = algorithm.Compress(stream).Result)
             using (var decompressed = algorithm.Decompress(compressed))
             using (var decompressedStream = new MemoryStream())
             {
-                decompressed.CopyTo(decompressedStream);
+                decompressed.Result.CopyTo(decompressedStream);
 
                 Assert.AreEqual(text, Encoding.UTF8.GetString(decompressedStream.ToArray()));
             }

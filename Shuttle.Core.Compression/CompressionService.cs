@@ -17,16 +17,6 @@ namespace Shuttle.Core.Compression
             }
         }
 
-        public byte[] Compress(string name, byte[] bytes)
-        {
-            return Get(name).Compress(bytes);
-        }
-
-        public byte[] Decompress(string name, byte[] bytes)
-        {
-            return Get(name).Decompress(bytes);
-        }
-
         public ICompressionService Add(ICompressionAlgorithm compressionAlgorithm)
         {
             Guard.AgainstNull(compressionAlgorithm, nameof(compressionAlgorithm));

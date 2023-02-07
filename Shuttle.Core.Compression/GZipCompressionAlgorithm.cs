@@ -1,5 +1,6 @@
 using System.IO;
 using System.IO.Compression;
+using System.Threading.Tasks;
 using Shuttle.Core.Contract;
 
 namespace Shuttle.Core.Compression
@@ -8,33 +9,36 @@ namespace Shuttle.Core.Compression
     {
         public string Name => "GZip";
 
-        public byte[] Compress(byte[] bytes)
+        public async Task<byte[]> Compress(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
-            using (var compressed = MemoryStreamCache.Manager.GetStream())
-            {
-                using (var gzip = new GZipStream(compressed, CompressionMode.Compress, true))
-                {
-                    gzip.Write(bytes, 0, bytes.Length);
-                }
+            using var compressed = MemoryStreamCache.Manager.GetStream();
 
-                return compressed.ToArray();
+            var gzip = new GZipStream(compressed, CompressionMode.Compress, true);
+            
+            await using (gzip.ConfigureAwait(false))
+            {
+                await gzip.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
+
+            return compressed.ToArray();
         }
 
-        public byte[] Decompress(byte[] bytes)
+        public async Task<byte[]> Decompress(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
-            using (var gzip = new GZipStream(new MemoryStream(bytes), CompressionMode.Decompress))
+            using var decompressed = MemoryStreamCache.Manager.GetStream();
+
+            var gzip = new GZipStream(new MemoryStream(bytes), CompressionMode.Decompress);
+            
+            await using (gzip.ConfigureAwait(false))
             {
-                using (var decompressed = MemoryStreamCache.Manager.GetStream())
-                {
-                    gzip.CopyTo(decompressed);
-                    return decompressed.ToArray();
-                }
+                await gzip.CopyToAsync(decompressed).ConfigureAwait(false);
             }
+
+            return decompressed.ToArray();
         }
     }
 }
