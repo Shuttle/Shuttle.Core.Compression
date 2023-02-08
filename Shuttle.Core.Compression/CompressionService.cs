@@ -43,5 +43,10 @@ namespace Shuttle.Core.Compression
 
             return _compressionAlgorithms[name];
         }
+
+        public bool Contains(string name)
+        {
+            return _compressionAlgorithms.ContainsKey(Guard.AgainstNullOrEmptyString(name, nameof(name)));
+        }
     }
 }

@@ -4,5 +4,6 @@
     {
         ICompressionService Add(ICompressionAlgorithm compressionAlgorithm);
         ICompressionAlgorithm Get(string name);
+        bool Contains(string name);
     }
 }
