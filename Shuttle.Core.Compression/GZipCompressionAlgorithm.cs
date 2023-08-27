@@ -9,7 +9,32 @@ namespace Shuttle.Core.Compression
     {
         public string Name => "GZip";
 
-        public async Task<byte[]> Compress(byte[] bytes)
+        public byte[] Compress(byte[] bytes)
+        {
+            Guard.AgainstNull(bytes, nameof(bytes));
+
+            using var compressed = MemoryStreamCache.Manager.GetStream();
+            using (var gzip = new GZipStream(compressed, CompressionMode.Compress, true))
+            {
+                gzip.Write(bytes, 0, bytes.Length);
+            }
+
+            return compressed.ToArray();
+        }
+
+        public byte[] Decompress(byte[] bytes)
+        {
+            Guard.AgainstNull(bytes, nameof(bytes));
+
+            using var gzip = new GZipStream(new MemoryStream(bytes), CompressionMode.Decompress);
+            using var decompressed = MemoryStreamCache.Manager.GetStream();
+
+            gzip.CopyTo(decompressed);
+
+            return decompressed.ToArray();
+        }
+
+        public async Task<byte[]> CompressAsync(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
@@ -25,7 +50,7 @@ namespace Shuttle.Core.Compression
             return compressed.ToArray();
         }
 
-        public async Task<byte[]> Decompress(byte[] bytes)
+        public async Task<byte[]> DecompressAsync(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 

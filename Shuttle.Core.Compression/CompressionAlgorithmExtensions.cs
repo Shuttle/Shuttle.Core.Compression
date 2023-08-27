@@ -6,18 +6,33 @@ namespace Shuttle.Core.Compression
 {
     public static class CompressionAlgorithmExtensions
     {
-        public static async Task<Stream> Compress(this ICompressionAlgorithm algorithm, Stream stream)
+        public static Stream Compress(this ICompressionAlgorithm algorithm, Stream stream)
         {
             Guard.AgainstNull(algorithm, nameof(algorithm));
             Guard.AgainstNull(stream, nameof(stream));
 
-            using var ms = new MemoryStream();
-            
-            await stream.CopyToAsync(ms).ConfigureAwait(false);
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
 
-            return new MemoryStream(await algorithm.Compress(ms.ToArray()));
+                return new MemoryStream(algorithm.Compress(ms.ToArray()));
+            }
         }
-        public static async Task<Stream> Decompress(this ICompressionAlgorithm algorithm, Stream stream)
+
+        public static Stream Decompress(this ICompressionAlgorithm algorithm, Stream stream)
+        {
+            Guard.AgainstNull(algorithm, nameof(algorithm));
+            Guard.AgainstNull(stream, nameof(stream));
+
+            using (var ms = new MemoryStream())
+            {
+                stream.CopyTo(ms);
+
+                return new MemoryStream(algorithm.Decompress(ms.ToArray()));
+            }
+        }
+
+        public static async Task<Stream> CompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
         {
             Guard.AgainstNull(algorithm, nameof(algorithm));
             Guard.AgainstNull(stream, nameof(stream));
@@ -26,7 +41,19 @@ namespace Shuttle.Core.Compression
             
             await stream.CopyToAsync(ms).ConfigureAwait(false);
 
-            return new MemoryStream(await algorithm.Decompress(ms.ToArray()));
+            return new MemoryStream(await algorithm.CompressAsync(ms.ToArray()));
+        }
+
+        public static async Task<Stream> DecompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
+        {
+            Guard.AgainstNull(algorithm, nameof(algorithm));
+            Guard.AgainstNull(stream, nameof(stream));
+
+            using var ms = new MemoryStream();
+            
+            await stream.CopyToAsync(ms).ConfigureAwait(false);
+
+            return new MemoryStream(await algorithm.DecompressAsync(ms.ToArray()));
         }
     }
 }

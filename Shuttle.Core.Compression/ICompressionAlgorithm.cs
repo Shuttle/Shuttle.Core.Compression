@@ -6,8 +6,9 @@ namespace Shuttle.Core.Compression
     {
         string Name { get; }
 
-        Task<byte[]> Compress(byte[] bytes);
-
-        Task<byte[]> Decompress(byte[] bytes);
+        byte[] Compress(byte[] bytes);
+        byte[] Decompress(byte[] bytes);
+        Task<byte[]> CompressAsync(byte[] bytes);
+        Task<byte[]> DecompressAsync(byte[] bytes);
     }
 }

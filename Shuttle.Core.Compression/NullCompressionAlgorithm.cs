@@ -6,12 +6,22 @@ namespace Shuttle.Core.Compression
     {
         public string Name => "null";
 
-        public Task<byte[]> Compress(byte[] bytes)
+        public byte[] Compress(byte[] bytes)
+        {
+            return bytes;
+        }
+
+        public byte[] Decompress(byte[] bytes)
+        {
+            return bytes;
+        }
+        
+        public Task<byte[]> CompressAsync(byte[] bytes)
         {
             return Task.FromResult(bytes);
         }
 
-        public Task<byte[]> Decompress(byte[] bytes)
+        public Task<byte[]> DecompressAsync(byte[] bytes)
         {
             return Task.FromResult(bytes);
         }

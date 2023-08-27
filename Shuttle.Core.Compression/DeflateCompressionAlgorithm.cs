@@ -9,32 +9,59 @@ namespace Shuttle.Core.Compression
     {
         public string Name => "Deflate";
 
-        public async Task<byte[]> Compress(byte[] bytes)
+        public byte[] Compress(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
             using var compressed = MemoryStreamCache.Manager.GetStream();
-
-            var gzip = new DeflateStream(compressed, CompressionMode.Compress, true);
-            
-            await using (gzip.ConfigureAwait(false))
+            using (var deflate = new DeflateStream(compressed, CompressionMode.Compress, true))
             {
-                await gzip.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                deflate.Write(bytes, 0, bytes.Length);
             }
 
             return compressed.ToArray();
         }
 
-        public async Task<byte[]> Decompress(byte[] bytes)
+        public byte[] Decompress(byte[] bytes)
+        {
+            Guard.AgainstNull(bytes, nameof(bytes));
+
+            using var deflate = new DeflateStream(new MemoryStream(bytes), CompressionMode.Decompress);
+            using var decompressed = MemoryStreamCache.Manager.GetStream();
+
+            deflate.CopyTo(decompressed);
+
+            return decompressed.ToArray();
+        }
+
+        public async Task<byte[]> CompressAsync(byte[] bytes)
+        {
+            Guard.AgainstNull(bytes, nameof(bytes));
+
+            using var compressed = MemoryStreamCache.Manager.GetStream();
+
+            var deflate = new DeflateStream(compressed, CompressionMode.Compress, true);
+            
+            await using (deflate.ConfigureAwait(false))
+            {
+                await deflate.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+            }
+
+            return compressed.ToArray();
+        }
+
+        public async Task<byte[]> DecompressAsync(byte[] bytes)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
             using var decompressed = MemoryStreamCache.Manager.GetStream();
 
-            var gzip = new DeflateStream(new MemoryStream(bytes), CompressionMode.Decompress);
+            var deflate = new DeflateStream(new MemoryStream(bytes), CompressionMode.Decompress);
             
-            await using var _ = gzip.ConfigureAwait(false);
-            await gzip.CopyToAsync(decompressed).ConfigureAwait(false);
+            await using (deflate.ConfigureAwait(false))
+            {
+                await deflate.CopyToAsync(decompressed).ConfigureAwait(false);
+            }
 
             return decompressed.ToArray();
         }
