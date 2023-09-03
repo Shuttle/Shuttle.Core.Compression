@@ -11,46 +11,46 @@ namespace Shuttle.Core.Compression
 
         public byte[] Compress(byte[] bytes)
         {
-            Guard.AgainstNull(bytes, nameof(bytes));
-
-            using var compressed = MemoryStreamCache.Manager.GetStream();
-            using (var deflate = new DeflateStream(compressed, CompressionMode.Compress, true))
-            {
-                deflate.Write(bytes, 0, bytes.Length);
-            }
-
-            return compressed.ToArray();
+            return CompressAsync(bytes, true).GetAwaiter().GetResult();
         }
 
         public byte[] Decompress(byte[] bytes)
         {
-            Guard.AgainstNull(bytes, nameof(bytes));
-
-            using var deflate = new DeflateStream(new MemoryStream(bytes), CompressionMode.Decompress);
-            using var decompressed = MemoryStreamCache.Manager.GetStream();
-
-            deflate.CopyTo(decompressed);
-
-            return decompressed.ToArray();
+            return DecompressAsync(bytes, true).GetAwaiter().GetResult();
         }
 
         public async Task<byte[]> CompressAsync(byte[] bytes)
         {
+            return await CompressAsync(bytes, false);
+        }
+
+        private static async Task<byte[]> CompressAsync(byte[] bytes, bool sync)
+        {
             Guard.AgainstNull(bytes, nameof(bytes));
 
             using var compressed = MemoryStreamCache.Manager.GetStream();
+            await using var deflate = new DeflateStream(compressed, CompressionMode.Compress, true);
 
-            var deflate = new DeflateStream(compressed, CompressionMode.Compress, true);
-            
-            await using (deflate.ConfigureAwait(false))
+            if (sync)
+            {
+                deflate.Write(bytes, 0, bytes.Length);
+            }
+            else
             {
                 await deflate.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
             }
+
+            deflate.Flush();
 
             return compressed.ToArray();
         }
 
         public async Task<byte[]> DecompressAsync(byte[] bytes)
+        {
+            return await DecompressAsync(bytes, false);
+        }
+
+        private static async Task<byte[]> DecompressAsync(byte[] bytes, bool sync)
         {
             Guard.AgainstNull(bytes, nameof(bytes));
 
@@ -60,7 +60,14 @@ namespace Shuttle.Core.Compression
             
             await using (deflate.ConfigureAwait(false))
             {
-                await deflate.CopyToAsync(decompressed).ConfigureAwait(false);
+                if (sync)
+                {
+                    deflate.CopyTo(decompressed);
+                }
+                else
+                {
+                    await deflate.CopyToAsync(decompressed).ConfigureAwait(false);
+                }
             }
 
             return decompressed.ToArray();
