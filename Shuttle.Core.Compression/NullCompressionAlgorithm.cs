@@ -16,14 +16,14 @@ namespace Shuttle.Core.Compression
             return bytes;
         }
         
-        public Task<byte[]> CompressAsync(byte[] bytes)
+        public async Task<byte[]> CompressAsync(byte[] bytes)
         {
-            return Task.FromResult(bytes);
+            return await Task.FromResult(bytes);
         }
 
-        public Task<byte[]> DecompressAsync(byte[] bytes)
+        public async Task<byte[]> DecompressAsync(byte[] bytes)
         {
-            return Task.FromResult(bytes);
+            return await Task.FromResult(bytes);
         }
     }
 }
