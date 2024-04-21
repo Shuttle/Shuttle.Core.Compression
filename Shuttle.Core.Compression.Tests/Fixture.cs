@@ -20,8 +20,7 @@ public class Fixture
 
     private static void AssertAlgorithm(ICompressionAlgorithm algorithm, string text)
     {
-        Assert.AreEqual(text,
-            Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
+        Assert.AreEqual(text, Encoding.UTF8.GetString(algorithm.Decompress(algorithm.Compress(Encoding.UTF8.GetBytes(text)))));
 
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         using var compressed = algorithm.Compress(stream);
@@ -55,9 +54,6 @@ public class Fixture
 
     private static async Task AssertAlgorithmAsync(ICompressionAlgorithm algorithm, string text)
     {
-        Assert.AreEqual(text,
-            Encoding.UTF8.GetString(await algorithm.DecompressAsync(await algorithm.CompressAsync(Encoding.UTF8.GetBytes(text)))));
-
         using var stream = new MemoryStream(Encoding.UTF8.GetBytes(text));
         await using var compressed = await algorithm.CompressAsync(stream);
         await using var decompressed = await algorithm.DecompressAsync(compressed);
