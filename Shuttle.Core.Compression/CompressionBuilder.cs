@@ -12,20 +12,6 @@ namespace Shuttle.Core.Compression
 
         public IServiceCollection Services { get; }
 
-        public CompressionBuilder AddGzip()
-        {
-            Services.AddSingleton<ICompressionAlgorithm, GZipCompressionAlgorithm>();
-
-            return this;
-        }
-
-        public CompressionBuilder AddDeflate()
-        {
-            Services.AddSingleton<ICompressionAlgorithm, DeflateCompressionAlgorithm>();
-
-            return this;
-        }
-
         public CompressionBuilder AddNull()
         {
             Services.AddSingleton<ICompressionAlgorithm, NullCompressionAlgorithm>();

@@ -17,16 +17,6 @@ namespace Shuttle.Core.Compression
             }
         }
 
-        public byte[] Compress(string name, byte[] bytes)
-        {
-            return Get(name).Compress(bytes);
-        }
-
-        public byte[] Decompress(string name, byte[] bytes)
-        {
-            return Get(name).Decompress(bytes);
-        }
-
         public ICompressionService Add(ICompressionAlgorithm compressionAlgorithm)
         {
             Guard.AgainstNull(compressionAlgorithm, nameof(compressionAlgorithm));
@@ -53,5 +43,12 @@ namespace Shuttle.Core.Compression
 
             return _compressionAlgorithms[name];
         }
+
+        public bool Contains(string name)
+        {
+            return _compressionAlgorithms.ContainsKey(Guard.AgainstNullOrEmptyString(name, nameof(name)));
+        }
+
+        public IEnumerable<ICompressionAlgorithm> Algorithms => _compressionAlgorithms.Values;
     }
 }

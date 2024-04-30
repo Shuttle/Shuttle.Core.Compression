@@ -1,10 +1,13 @@
-﻿namespace Shuttle.Core.Compression
+﻿using System.Collections;
+using System.Collections.Generic;
+
+namespace Shuttle.Core.Compression
 {
     public interface ICompressionService
     {
-        byte[] Compress(string name, byte[] bytes);
-        byte[] Decompress(string name, byte[] bytes);
         ICompressionService Add(ICompressionAlgorithm compressionAlgorithm);
         ICompressionAlgorithm Get(string name);
+        bool Contains(string name);
+        IEnumerable<ICompressionAlgorithm> Algorithms { get; }
     }
 }
