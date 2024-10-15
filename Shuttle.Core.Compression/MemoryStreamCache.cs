@@ -1,9 +1,8 @@
 using Microsoft.IO;
 
-namespace Shuttle.Core.Compression
+namespace Shuttle.Core.Compression;
+
+internal static class MemoryStreamCache
 {
-    internal static class MemoryStreamCache
-    {
-        public static readonly RecyclableMemoryStreamManager Manager = new RecyclableMemoryStreamManager();
-    }
+    public static readonly RecyclableMemoryStreamManager Manager = new();
 }

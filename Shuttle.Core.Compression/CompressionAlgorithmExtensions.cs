@@ -2,58 +2,31 @@
 using System.Threading.Tasks;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Core.Compression
+namespace Shuttle.Core.Compression;
+
+public static class CompressionAlgorithmExtensions
 {
-    public static class CompressionAlgorithmExtensions
+    public static async Task<Stream> CompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
     {
-        public static Stream Compress(this ICompressionAlgorithm algorithm, Stream stream)
-        {
-            Guard.AgainstNull(algorithm, nameof(algorithm));
-            Guard.AgainstNull(stream, nameof(stream));
+        Guard.AgainstNull(algorithm);
+        Guard.AgainstNull(stream);
 
-            using (var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);
+        using var ms = new MemoryStream();
 
-                return new MemoryStream(algorithm.Compress(ms.ToArray()));
-            }
-        }
+        await stream.CopyToAsync(ms).ConfigureAwait(false);
 
-        public static Stream Decompress(this ICompressionAlgorithm algorithm, Stream stream)
-        {
-            Guard.AgainstNull(algorithm, nameof(algorithm));
-            Guard.AgainstNull(stream, nameof(stream));
+        return new MemoryStream(await algorithm.CompressAsync(ms.ToArray()));
+    }
 
-            using (var ms = new MemoryStream())
-            {
-                stream.CopyTo(ms);
+    public static async Task<Stream> DecompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
+    {
+        Guard.AgainstNull(algorithm);
+        Guard.AgainstNull(stream);
 
-                return new MemoryStream(algorithm.Decompress(ms.ToArray()));
-            }
-        }
+        using var ms = new MemoryStream();
 
-        public static async Task<Stream> CompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
-        {
-            Guard.AgainstNull(algorithm, nameof(algorithm));
-            Guard.AgainstNull(stream, nameof(stream));
+        await stream.CopyToAsync(ms).ConfigureAwait(false);
 
-            using var ms = new MemoryStream();
-            
-            await stream.CopyToAsync(ms).ConfigureAwait(false);
-
-            return new MemoryStream(await algorithm.CompressAsync(ms.ToArray()));
-        }
-
-        public static async Task<Stream> DecompressAsync(this ICompressionAlgorithm algorithm, Stream stream)
-        {
-            Guard.AgainstNull(algorithm, nameof(algorithm));
-            Guard.AgainstNull(stream, nameof(stream));
-
-            using var ms = new MemoryStream();
-            
-            await stream.CopyToAsync(ms).ConfigureAwait(false);
-
-            return new MemoryStream(await algorithm.DecompressAsync(ms.ToArray()));
-        }
+        return new MemoryStream(await algorithm.DecompressAsync(ms.ToArray()));
     }
 }
