@@ -3,21 +3,20 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Shuttle.Core.Contract;
 
-namespace Shuttle.Core.Compression
+namespace Shuttle.Core.Compression;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static IServiceCollection AddCompression(this IServiceCollection services, Action<CompressionBuilder>? builder = null)
     {
-        public static IServiceCollection AddCompression(this IServiceCollection services, Action<CompressionBuilder> builder = null)
-        {
-            Guard.AgainstNull(services, nameof(services));
+        Guard.AgainstNull(services);
 
-            var options = new CompressionBuilder(services);
+        var options = new CompressionBuilder(services);
 
-            builder?.Invoke(options);
+        builder?.Invoke(options);
 
-            services.TryAddSingleton<ICompressionService, CompressionService>();
+        services.TryAddSingleton<ICompressionService, CompressionService>();
 
-            return services;
-        }
+        return services;
     }
 }
