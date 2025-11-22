@@ -6,16 +6,19 @@ namespace Shuttle.Core.Compression;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddCompression(this IServiceCollection services, Action<CompressionBuilder>? builder = null)
+    extension(IServiceCollection services)
     {
-        Guard.AgainstNull(services);
+        public IServiceCollection AddCompression(Action<CompressionBuilder>? builder = null)
+        {
+            Guard.AgainstNull(services);
 
-        var options = new CompressionBuilder(services);
+            var options = new CompressionBuilder(services);
 
-        builder?.Invoke(options);
+            builder?.Invoke(options);
 
-        services.TryAddSingleton<ICompressionService, CompressionService>();
+            services.TryAddSingleton<ICompressionService, CompressionService>();
 
-        return services;
+            return services;
+        }
     }
 }
