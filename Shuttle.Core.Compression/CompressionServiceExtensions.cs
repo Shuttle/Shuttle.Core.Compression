@@ -1,17 +1,19 @@
-﻿using System.Threading.Tasks;
-using Shuttle.Core.Contract;
+﻿using Shuttle.Core.Contract;
 
 namespace Shuttle.Core.Compression;
 
 public static class CompressionServiceExtensions
 {
-    public static async Task<byte[]> CompressAsync(this ICompressionService compressionService, string name, byte[] bytes)
+    extension(ICompressionService compressionService)
     {
-        return await Guard.AgainstNull(compressionService, nameof(compressionService)).Get(name).CompressAsync(bytes);
-    }
+        public async Task<byte[]> CompressAsync(string name, byte[] bytes)
+        {
+            return await Guard.AgainstNull(compressionService, nameof(compressionService)).Get(name).CompressAsync(bytes);
+        }
 
-    public static async Task<byte[]> DecompressAsync(this ICompressionService compressionService, string name, byte[] bytes)
-    {
-        return await Guard.AgainstNull(compressionService, nameof(compressionService)).Get(name).DecompressAsync(bytes);
+        public async Task<byte[]> DecompressAsync(string name, byte[] bytes)
+        {
+            return await Guard.AgainstNull(compressionService, nameof(compressionService)).Get(name).DecompressAsync(bytes);
+        }
     }
 }

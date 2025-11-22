@@ -5,10 +5,13 @@ namespace Shuttle.Core.Compression;
 
 public static class DeflateCompressionExtensions
 {
-    public static CompressionBuilder AddDeflate(this CompressionBuilder builder)
+    extension(CompressionBuilder compressionBuilder)
     {
-        Guard.AgainstNull(builder).Services.AddSingleton<ICompressionAlgorithm, DeflateCompressionAlgorithm>();
+        public CompressionBuilder AddDeflate()
+        {
+            Guard.AgainstNull(compressionBuilder).Services.AddSingleton<ICompressionAlgorithm, DeflateCompressionAlgorithm>();
 
-        return builder;
+            return compressionBuilder;
+        }
     }
 }

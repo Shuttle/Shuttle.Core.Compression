@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace Shuttle.Core.Compression;
+﻿namespace Shuttle.Core.Compression;
 
 public interface ICompressionService
 {

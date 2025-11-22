@@ -3,14 +3,9 @@ using Shuttle.Core.Contract;
 
 namespace Shuttle.Core.Compression;
 
-public class CompressionBuilder
+public class CompressionBuilder(IServiceCollection services)
 {
-    public CompressionBuilder(IServiceCollection services)
-    {
-        Services = Guard.AgainstNull(services, nameof(services));
-    }
-
-    public IServiceCollection Services { get; }
+    public IServiceCollection Services { get; } = Guard.AgainstNull(services, nameof(services));
 
     public CompressionBuilder AddNull()
     {

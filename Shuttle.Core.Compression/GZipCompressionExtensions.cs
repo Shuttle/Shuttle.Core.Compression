@@ -5,10 +5,13 @@ namespace Shuttle.Core.Compression;
 
 public static class GZipCompressionExtensions
 {
-    public static CompressionBuilder AddGzip(this CompressionBuilder builder)
+    extension(CompressionBuilder compressionBuilder)
     {
-        Guard.AgainstNull(builder).Services.AddSingleton<ICompressionAlgorithm, GZipCompressionAlgorithm>();
+        public CompressionBuilder AddGzip()
+        {
+            Guard.AgainstNull(compressionBuilder).Services.AddSingleton<ICompressionAlgorithm, GZipCompressionAlgorithm>();
 
-        return builder;
+            return compressionBuilder;
+        }
     }
 }

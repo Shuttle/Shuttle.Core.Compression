@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Shuttle.Core.Contract;
+﻿using Shuttle.Core.Contract;
 
 namespace Shuttle.Core.Compression;
 
@@ -11,7 +8,7 @@ public class CompressionService : ICompressionService
 
     public CompressionService(IEnumerable<ICompressionAlgorithm>? compressionAlgorithms = null)
     {
-        foreach (var compressionAlgorithm in compressionAlgorithms ?? Enumerable.Empty<ICompressionAlgorithm>())
+        foreach (var compressionAlgorithm in compressionAlgorithms ?? [])
         {
             Add(compressionAlgorithm);
         }
@@ -31,7 +28,7 @@ public class CompressionService : ICompressionService
 
     public ICompressionAlgorithm Get(string name)
     {
-        Guard.AgainstNullOrEmptyString(name);
+        Guard.AgainstEmpty(name);
 
         if (!_compressionAlgorithms.TryGetValue(name, out var algorithm))
         {
@@ -43,7 +40,7 @@ public class CompressionService : ICompressionService
 
     public bool Contains(string name)
     {
-        return _compressionAlgorithms.ContainsKey(Guard.AgainstNullOrEmptyString(name));
+        return _compressionAlgorithms.ContainsKey(Guard.AgainstEmpty(name));
     }
 
     public IEnumerable<ICompressionAlgorithm> Algorithms => _compressionAlgorithms.Values;
