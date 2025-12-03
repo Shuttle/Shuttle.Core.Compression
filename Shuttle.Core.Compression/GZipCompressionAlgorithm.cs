@@ -7,7 +7,7 @@ public class GZipCompressionAlgorithm : ICompressionAlgorithm
 {
     public string Name => "GZip";
 
-    public async Task<byte[]> CompressAsync(byte[] bytes)
+    public async Task<byte[]> CompressAsync(byte[] bytes, CancellationToken cancellationToken = default)
     {
         Guard.AgainstNull(bytes);
 
@@ -17,13 +17,13 @@ public class GZipCompressionAlgorithm : ICompressionAlgorithm
 
         await using (gzip.ConfigureAwait(false))
         {
-            await gzip.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+            await gzip.WriteAsync(bytes, 0, bytes.Length, cancellationToken).ConfigureAwait(false);
         }
 
         return compressed.ToArray();
     }
 
-    public async Task<byte[]> DecompressAsync(byte[] bytes)
+    public async Task<byte[]> DecompressAsync(byte[] bytes, CancellationToken cancellationToken = default)
     {
         Guard.AgainstNull(bytes);
 
@@ -33,7 +33,7 @@ public class GZipCompressionAlgorithm : ICompressionAlgorithm
 
         await using (gzip.ConfigureAwait(false))
         {
-            await gzip.CopyToAsync(decompressed).ConfigureAwait(false);
+            await gzip.CopyToAsync(decompressed, cancellationToken).ConfigureAwait(false);
         }
 
         return decompressed.ToArray();
