@@ -10,6 +10,12 @@ Implementations available in this package:
 
 There is also an `ICompressionService` that acts as a central container for all registered `ICompressionAlgorithm` implementations.
 
+## Installation
+
+```bash
+dotnet add package Shuttle.Core.Compression
+```
+
 ## Algorithm Names
 
 When retrieving algorithms from the service, use these exact names:
