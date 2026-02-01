@@ -7,7 +7,7 @@ public static class GZipCompressionExtensions
 {
     extension(CompressionBuilder compressionBuilder)
     {
-        public CompressionBuilder AddGzip()
+        public CompressionBuilder AddGZip()
         {
             Guard.AgainstNull(compressionBuilder).Services.AddSingleton<ICompressionAlgorithm, GZipCompressionAlgorithm>();
 
